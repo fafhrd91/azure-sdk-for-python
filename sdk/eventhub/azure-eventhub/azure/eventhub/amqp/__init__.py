@@ -10,11 +10,16 @@ from ._amqp_message import (
     AmqpMessageProperties,
     AmqpMessageHeader,
 )
-
+from ._mqtt_metadata import (
+    MqttMetadata,
+    MqttUserProperty,
+)
 
 __all__ = [
     "AmqpAnnotatedMessage",
     "AmqpMessageBodyType",
     "AmqpMessageProperties",
     "AmqpMessageHeader",
+    "MqttMetadata",
+    "MqttUserProperty",
 ]

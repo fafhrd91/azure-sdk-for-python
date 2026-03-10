@@ -285,3 +285,8 @@ class _MessageDelivery:
         self.reason = None
         self.delivery = None
         self.error = None
+
+
+class Composite(NamedTuple):
+    descriptor: Union[int, str]
+    value: Any

@@ -7,8 +7,9 @@
 from __future__ import annotations
 from typing import Optional, Any, cast, Mapping, Dict, Union, List
 
+from traceback import print_stack
 from ._amqp_utils import normalized_data_body, normalized_sequence_body
-from ._constants import AmqpMessageBodyType
+from ._constants import COMPOSITES, AmqpMessageBodyType
 from .._mixin import DictMixin
 
 
@@ -45,6 +46,7 @@ class AmqpAnnotatedMessage:
     """
 
     def __init__(self, **kwargs: Any) -> None:
+        #print_stack()
         self._encoding = kwargs.pop("encoding", "UTF-8")
         self._data_body: Optional[Union[str, bytes, List[Union[str, bytes]]]] = None
         self._sequence_body: Optional[List[Any]] = None
@@ -156,6 +158,12 @@ class AmqpAnnotatedMessage:
         )
         self._footer = message.footer if message.footer else {}
         self._annotations = message.message_annotations if message.message_annotations else {}
+        for k, v in self._annotations.items():
+            if hasattr(v, "descriptor"):
+                try:
+                    self._annotations[k] = COMPOSITES[v.descriptor](v.value)
+                except KeyError:
+                    pass
         self._delivery_annotations = message.delivery_annotations if message.delivery_annotations else {}
         self._application_properties = message.application_properties if message.application_properties else {}
         if message.data:

@@ -22,7 +22,7 @@ from typing import (
 from typing_extensions import Literal
 
 
-from .message import Message, Header, Properties
+from .message import Message, Header, Properties, Composite
 
 if TYPE_CHECKING:
     from .message import MessageDict
@@ -285,7 +285,7 @@ def _decode_described(buffer: memoryview) -> Tuple[memoryview, object]:
         composite_type = cast(int, _COMPOSITES[descriptor])
         return buffer, {composite_type: value}
     except KeyError:
-        return buffer, value
+        return buffer, Composite(descriptor, value)
 
 
 def decode_payload(buffer: memoryview) -> Message:
